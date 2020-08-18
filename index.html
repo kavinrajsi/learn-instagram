@@ -25,15 +25,13 @@
 </head>
 
 <body>
-    <h class="text-center">Instagram feed test</h> 
-    <div class="fb-login-button" data-size="large" data-button-type="continue_with" data-layout="default"
-        data-auto-logout-link="false" data-use-continue-as="false" data-width=""></div>
+    <h1 class="text-center">Instagram feed test</h1> 
     <div class="container">
         <div class="row" id="root"> </div>
     </div>
     <script>
         let request = new XMLHttpRequest();
-        let user = 'sundari_silks';
+        let user = 'madarth.agency';
         request.open('GET', `https://www.instagram.com/${user}/?__a=1&first=100`, false);
         request.send();
         if (request.readyState === 4 && request.status === 200) {

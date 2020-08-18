@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram graphql</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <style>
+        .profile-pic {
+            background: linear-gradient(40deg, #f99b4a 15%, #dd3071 50%, #c72e8d 85%);
+            min-width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            padding: 4px;
+            box-sizing: border-box;
+            margin-right: 12px;
+        }
+
+        .col-12 {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <h class="text-center">Instagram feed test</h> 
+    <div class="fb-login-button" data-size="large" data-button-type="continue_with" data-layout="default"
+        data-auto-logout-link="false" data-use-continue-as="false" data-width=""></div>
+    <div class="container">
+        <div class="row" id="root"> </div>
+    </div>
+    <script>
+        let request = new XMLHttpRequest();
+        let user = 'sundari_silks';
+        request.open('GET', `https://www.instagram.com/${user}/?__a=1&first=100`, false);
+        request.send();
+        if (request.readyState === 4 && request.status === 200) {
+            data = JSON.parse(request.response);
+            let dataContent, userName, output;
+            dataContent = data.graphql.user.edge_owner_to_timeline_media.edges;
+            userName = data.graphql.user.username;
+            userPic = data.graphql.user.profile_pic_url_hd;
+            dataContent.forEach((flog, index) => {
+                // console.log(flog);
+                output = `<div class="col-12 col-sm-6 col-md-3 col-lg-4">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between">
+                                    <img src="${userPic}" title="${userName}" alt="${userName}" target="_blank" rel="nofollow"
+                                        class="profile-pic">
+                                    <a href="https://www.instagram.com/${userName}" target="_blank"> Follow </a>
+                                </div>
+                                <img class="card-img-top img-fluid" alt="${flog.node.edge_media_to_caption.edges[0].node.text}"
+                                    src="${flog.node.thumbnail_src}">
+                                <p class="lead-text"><span class="strong">👍 </span>${flog.node.edge_liked_by.count}</p>
+                                <p class="lead-text"><span class="strong">📄 </span>${flog.node.edge_media_to_caption.edges[0].node.text}</p>
+                            </div>
+                        </div>`;
+                document.getElementById('root').innerHTML += output;
+            });
+        }
+    </script>
+    <script>
+        window.fbAsyncInit = function () {
+            FB.init({
+                appId: '597872634452746',
+                cookie: true,
+                xfbml: true,
+                version: 'v8.0'
+            });
+
+            FB.AppEvents.logPageView();
+
+        };
+
+        (function (d, s, id) {
+            var js, fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) { return; }
+            js = d.createElement(s); js.id = id;
+            js.src = "https://connect.facebook.net/en_US/sdk.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));
+
+
+        function checkLoginState() {
+            FB.getLoginStatus(function (response) {
+                statusChangeCallback(response);
+            });
+        }
+    </script>
+</body>
+
+</html>
